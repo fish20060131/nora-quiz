@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NORA 寵物溝通 | 心靈連線測試</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f9f4ef; color: #4a4a4a; margin: 0; padding: 20px; }
+        #game-container { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); max-width: 600px; margin: auto; text-align: center; }
+        h1 { color: #8b5a2b; font-size: 26px; }
+        h2 { color: #555; font-size: 18px; margin-bottom: 25px; }
+        .option-btn { display: block; width: 100%; padding: 15px; margin: 10px 0; background-color: #fdfaf6; border: 2px solid #e0d5c1; border-radius: 8px; cursor: pointer; font-size: 16px; transition: all 0.3s; text-align: left; }
+        .option-btn:hover { background-color: #f6eeda; border-color: #d1c0a1; }
+        #feedback-area { margin-top: 20px; padding: 20px; background-color: #fff9e6; border-radius: 8px; border-left: 5px solid #ffcc00; display: none; text-align: left; }
+        #feedback-title { font-weight: bold; color: #b38600; margin-bottom: 10px; }
+        #next-btn { margin-top: 20px; padding: 12px 25px; background-color: #8b5a2b; color: white; border: none; border-radius: 25px; cursor: pointer; font-size: 16px; display: none; }
+        #result-area { display: none; }
+        .service-info { text-align: left; background: #fdfaf6; padding: 15px; border-radius: 8px; margin: 20px 0; border: 1px solid #e0d5c1; }
+        .price-list { font-weight: bold; color: #8b5a2b; }
+        .cta-btn { display: inline-block; padding: 15px 30px; margin: 10px; background-color: #00c300; color: white; text-decoration: none; border-radius: 25px; font-weight: bold; transition: background 0.3s; width: 80%; box-sizing: border-box; }
+        .cta-btn.ig { background-color: #e1306c; }
+        .cta-btn.share { background-color: #64b5f6; }
+        .cta-btn:hover { opacity: 0.9; }
+        .notice { font-size: 14px; color: #777; margin-top: 10px; }
+        #final-score-display { font-size: 22px; font-weight: bold; color: #8b5a2b; margin: 20px 0; padding: 15px; background: #fefcf5; border-radius: 10px; border: 2px dashed #d1c0a1; }
+        #final-comment { font-size: 16px; color: #555; font-style: italic; margin-bottom: 20px; }
+        .share-container { margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; }
+    </style>
+</head>
+<body>
+
+<div id="game-container">
+    <div id="quiz-area">
+        <h1>🐾 NORA 寵物心靈連線測試</h1>
+        <h2 id="question">問題加載中...</h2>
+        <div id="options"></div>
+        <div id="feedback-area">
+            <div id="feedback-title">溝通師客觀分析：</div>
+            <div id="feedback-text"></div>
+            <button id="next-btn" onclick="nextQuestion()">下一題</button>
+        </div>
+    </div>
+
+    <div id="result-area">
+        <h1>📊 測試結果報告</h1>
+        
+        <div id="final-score-display"></div>
+        <div id="final-comment"></div>
+        
+        <p>真正的溝通是去理解牠們真實的能量狀態。</p>
+        
+        <div class="service-info">
+            <h3>📖 服務項目與價格</h3>
+            <p><span class="price-list">一般溝通：</span> 20分鐘1588 / 後續10分鐘500</p>
+            <p><span class="price-list">離世溝通：</span> 20分鐘1888 / 後續10分鐘500</p>
+            <p><span class="price-list">走失溝通：</span> 2800/次 / 後續1600/次</p>
+            <p class="notice">* 離世溝通：協助告別，親探來世緣分</p>
+            <p class="notice">* 走失溝通：不保證找到，需搭配實際行動</p>
+        </div>
+
+        <div class="service-info">
+            <h3>📝 預約須知</h3>
+            <p>1. 必須是主要照顧者進行溝通</p>
+            <p>2. 請提供：寵物姓名、稱謂（如：媽媽）、照片、想問的問題</p>
+            <p>3. 若預約時間10分鐘內未上線，視同取消且不退款</p>
+        </div>
+
+        <p><strong>準備好深入了解牠的心靈 OS 嗎？</strong></p>
+        <a href="https://lin.ee/AX3mVqd" target="_blank" class="cta-btn">🔗 立即預約諮詢 (LINE)</a>
+        <br>
+        <a href="https://www.instagram.com/noraaa_1127?igsh=MWtsdzNvMHV4YWQ0eQ==" target="_blank" class="cta-btn ig">📷 追蹤 Instagram 看更多案例</a>
+        
+        <div class="share-container">
+            <p>覺得準嗎？分享給身邊的毛爸媽吧！</p>
+            <button onclick="shareTest()" class="cta-btn share">📲 分享測驗結果</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 心理測驗數據與評分邏輯
+    const quizData = [
+        {
+            q: "貓咪半夜突然瘋狂跑酷 (暴衝)，這通常代表？",
+            options: ["A. 牠在玩耍，很開心！", "B. 牠在發洩過多的精力。", "C. 牠在向我傳達某種需求。"],
+            scores: [0, 1, 2] // C最能理解情緒
+        },
+        {
+            q: "當你難過哭泣時，你的毛孩通常會有什麼反應？",
+            options: ["A. 主動來安慰我，陪在我身邊。", "B. 感覺到我心情不好，牠自己也躲起來。", "C. 沒反應，照樣玩耍。"],
+            scores: [1, 2, 0] // B反映敏感度與自我保護
+        },
+        {
+            q: "當你回家時，毛孩圍著你轉，這代表？",
+            options: ["A. 牠餓了，想吃東西。", "B. 牠想玩玩具。", "C. 牠在表達「我好想你」。"],
+            scores: [0, 1, 2] // C最深刻
+        },
+        {
+            q: "對於已經離世的寵物，你覺得牠們現在？",
+            options: ["A. 在另一個世界自由玩耍，忘記我了。", "B. 變成守護神，在遠處守護我。", "C. 靈魂還在原地，等我去看牠。"],
+            scores: [0, 2, 1] // B最正向
+        },
+        {
+            q: "最想對毛孩說的一句話是？",
+            options: ["A. 我會永遠愛你。", "B. 你乖乖的，不要拆家/亂叫。", "C. 請告訴我，你真正想要什麼？", "D. 對不起，我平常太忙沒時間陪你。", "E. 我希望你永遠不要生病/離世。"],
+            scores: [1, 0, 2, 0, 1] // C最客觀
+        }
+    ];
+
+    let currentQuestion = 0;
+    let totalScore = 0;
+    let finalTitle = "";
+
+    function loadQuestion() {
+        const qData = quizData[currentQuestion];
+        document.getElementById("question").innerText = `Q${currentQuestion + 1}: ${qData.q}`;
+        const optionsDiv = document.getElementById("options");
+        optionsDiv.innerHTML = "";
+        
+        qData.options.forEach((option, index) => {
+            const button = document.createElement("button");
+            button.innerText = option;
+            button.className = "option-btn";
+            button.onclick = () => selectOption(index);
+            optionsDiv.appendChild(button);
+        });
+        
+        document.getElementById("feedback-area").style.display = "none";
+    }
+
+    function selectOption(optionIndex) {
+        // 累計分數
+        totalScore += quizData[currentQuestion].scores[optionIndex];
+        
+        // 顯示對應的客觀分析
+        const feedbacks = [
+            [
+                "客觀分析：這是很多主人的第一直覺。但在寵物溝通中，這通常是**能量未釋放導致的焦慮**。您可能傾向於希望牠們單純是開心的。",
+                "客觀分析：正確的物理行為分析，但缺少了情緒層面的解讀。這代表您比較注重行為表面，忽略了能量層面（例如：可能需要更多互動）。",
+                "客觀分析：很棒！您能意識到動作背後的情緒。這往往是牠需要主人關注或環境改善的訊號。"
+            ],
+            [
+                "客觀分析：顯示了極強的共情連線。但要小心，若頻率過高，也可能是牠們吸收了您的負面能量，反而讓牠們感到壓力。",
+                "客觀分析：這反映了寵物對情緒的敏感。這是一種**自我保護機制**，牠們因為無法處理太沉重的能量而選擇迴避。",
+                "客觀分析：這是獨立的表現，但也可能代表連線較鬆散。您可能潛意識地希望牠們即使在您難過時也能自由開心。"
+            ],
+            [
+                "客觀分析：這是基於物質需求的判斷。其實寵物更注重情感互動，這可能忽略了牠對您的愛。",
+                "客觀分析：代表牠想與您互動，是正向的訊號。",
+                "客觀分析：最深刻的能量連結。如果您覺得這答案太「完美」而不敢選，代表您對真實的愛有些防禦。"
+            ],
+            [
+                "客觀分析：這代表您可能潛意識地想逃避悲傷，選擇了「切割」。實際上，靈魂的連結不會輕易斷裂。",
+                "客觀分析：這是一種**健康的連結方式**。讓您感到安心，是對離世寵物的正面看法。",
+                "客觀分析：這可能是一種**悲傷的滯留**。牠們通常希望主人能帶著愛繼續生活，而不是困在原地。"
+            ],
+            [
+                "客觀分析：強烈的愛，是最好的連線。但這句話有時也是主人在自我安慰。",
+                "客觀分析：您在潛意識裡把人類的標準套在寵物身上了，這會阻礙真正的溝通。",
+                "客觀分析：最客觀且具備溝通師潛力的選項！您已經準備好去聽牠們的聲音了。",
+                "客觀分析：顯示了罪惡感。寵物其實能感受到您的愛，不需要帶有太多的負面情緒。",
+                "客觀分析：這反映了人類對失去的恐懼。透過溝通，我們能學會更好地珍惜當下。"
+            ]
+        ];
+
+        document.getElementById("feedback-text").innerHTML = feedbacks[currentQuestion][optionIndex];
+        document.getElementById("feedback-area").style.display = "block";
+        document.getElementById("next-btn").style.display = "inline-block";
+        
+        // 隱藏選項按鈕，防止重複點擊
+        document.getElementById("options").style.display = "none";
+    }
+
+    function nextQuestion() {
+        currentQuestion++;
+        document.getElementById("options").style.display = "block";
+        
+        if (currentQuestion < quizData.length) {
+            loadQuestion();
+        } else {
+            showResult();
+        }
+    }
+
+    function showResult() {
+        document.getElementById("quiz-area").style.display = "none";
+        document.getElementById("result-area").style.display = "block";
+        
+        // 根據得分設定頭銜與評語
+        let comment = "";
+        if (totalScore >= 8) {
+            finalTitle = "🏆 心靈傳心師";
+            comment = "您對毛孩的能量感受非常敏銳！您懂得超越表面行為，去理解牠們真實的心聲。您已經準備好進行更深入的能量連線了！";
+        }
+        else if (totalScore >= 5) {
+            finalTitle = "🌟 心靈觀察者";
+            comment = "您很愛您的毛孩，也嘗試了解牠。雖然有時會被行為表面誤導，但只要多觀察牠的能量狀態，您就會發現牠更深層的 OS！";
+        }
+        else {
+            finalTitle = "🌱 心靈新手";
+            comment = "您與毛孩的溝通可能還停留在比較物質或表面的層次。別擔心，透過專業的能量調整與專注觀察，您也可以成為懂牠的人！";
+        }
+        
+        document.getElementById("final-score-display").innerHTML = `您的連線等級：<br>${finalTitle} (得分: ${totalScore}/10)`;
+        document.getElementById("final-comment").innerText = comment;
+    }
+
+    // 分享功能
+    function shareTest() {
+        const text = `我在NORA的寵物溝通測試中獲得了「${finalTitle}」！\n我的分數是：${totalScore}/10分。你也來測測看你懂不懂你的毛孩！\n`;
+        const url = window.location.href;
+        
+        if (navigator.share) {
+            navigator.share({
+                title: 'NORA 寵物心靈連線測試',
+                text: text,
+                url: url,
+            })
+        } else {
+            // 備用方案：複製到剪貼簿或提示使用者手動分享
+            const shareText = text + url;
+            navigator.clipboard.writeText(shareText).then(() => {
+                alert('分享文字已複製到剪貼簿，你可以貼到LINE或FB分享囉！');
+            });
+        }
+    }
+
+    // 初始化測驗
+    loadQuestion();
+</script>
+
+</body>
+</html>
